@@ -1,0 +1,85 @@
+import datetime
+
+class OnlineSalesRegisterCollector:
+
+    def __init__(self):
+        self.__name_items = []
+        self.__number_items = 0
+        self.__item_price = {'чипсы': 50, 'кола': 100, 'печенье': 45, 'молоко': 55, 'кефир': 70}
+        self.__tax_rate = {'чипсы': 20, 'кола': 20, 'печенье': 20, 'молоко': 10, 'кефир': 10}
+
+    @property
+    def name_items(self):
+        return self.__name_items
+
+    @property
+    def number_items(self):
+        return self.__number_items
+
+    def add_item_to_cheque(self, name):
+        if len(name) == 0 or len(name) > 40:
+            raise ValueError('Нельзя добавить товар, если в его названии нет символов или их больше 40')
+        elif name not in self.__item_price:
+            raise NameError('Позиция отсутствует в товарном справочнике')
+        else:
+            self.__name_items.append(name)
+            self.__number_items += 1
+
+    def delete_item_from_check(self, name):
+        if name not in self.__name_items:
+            raise NameError('Позиция отсутствует в чеке')
+        else:
+            self.__name_items.remove(name)
+            self.__number_items -= 1
+
+    def check_amount(self):
+        summ_check = 0
+        total = []
+        for key in self.__name_items:
+            total.append(self.__item_price[key])
+        if len(self.__name_items) > 10:
+            summ_check = sum(total)
+            summ_check *= 0.9
+            return summ_check
+        else:
+            summ_check = sum(total)
+            return summ_check
+
+    def twenty_percent_tax_calculation(self):
+        twenty_percent_tax = []
+        total = []
+        for product in self.__name_items:
+            if self.__tax_rate[product] == 20:
+                twenty_percent_tax.append(product)
+        for product in twenty_percent_tax:
+            total.append(self.__item_price[product])
+        sum_twenty_percent = sum(total)
+        if len(self.__name_items) > 10:
+            sum_twenty_percent *= 0.9
+        return sum_twenty_percent * 0.2
+
+    def ten_percent_tax_calculation(self):
+        ten_percent_tax = []
+        total = []
+        for product in self.__name_items:
+            if self.__tax_rate[product] == 10:
+                ten_percent_tax.append(product)
+        for product in ten_percent_tax:
+            total.append(self.__item_price[product])
+        sum_ten_percent = sum(total)
+        if len(self.__name_items) > 10:
+            sum_ten_percent *= 0.9
+        return sum_ten_percent * 0.1
+
+    def total_tax(self):
+        common_nds = self.ten_percent_tax_calculation() + self.twenty_percent_tax_calculation()
+        return common_nds
+
+    @staticmethod
+    def get_telephone_number(telephone_number):
+        if type(telephone_number) is not int:
+            raise ValueError('Необходимо ввести цифры')
+        elif len(str(telephone_number)) != 10:
+            raise ValueError('Необходимо ввести 10 цифр после "+7"')
+        else:
+            return f'+7{telephone_number}'
